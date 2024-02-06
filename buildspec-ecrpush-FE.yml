@@ -17,10 +17,10 @@ phases:
     commands:
       - echo "Building Docker image..."
       - cd frontend
-      - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION .
-      - echo "Pushing Docker image to AWS ECR..."
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
-      # - echo "Building Docker image 2..."
-      # - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$param1 .
+      # - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION .
       # - echo "Pushing Docker image to AWS ECR..."
-      # - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$param1
+      # - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
+      # - echo "Building Docker image 2..."
+      - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$imagetag .
+      - echo "Pushing Docker image to AWS ECR..."
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$imagetag
