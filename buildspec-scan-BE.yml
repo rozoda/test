@@ -21,6 +21,6 @@ phases:
       - echo "Checking Trivy scan results..."
       - if grep -qE "CRITICAL|HIGH" trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
 
-artifacts:
-  files:
+artifacts:  
+  files:  
     - trivy_report.txt
