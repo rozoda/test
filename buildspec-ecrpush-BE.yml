@@ -19,12 +19,12 @@ phases:
       - cd backend  
       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION .  
       - echo "Running security scan on the source code..."  
-      - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest --exit-code 0 --severity CRITICAL,HIGH /src  
+      - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest /src | tee trivy_report.txt  
   
   post_build:  
     commands:  
-      - echo "Pushing Docker image to AWS ECR..."  
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION  
+      - echo "Checking Trivy scan results..."  
+      - if grep -qE "CRITICAL|HIGH" trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Pushing Docker image to AWS ECR..."; docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION; fi  
   
 # artifacts:  
 #   files:  
