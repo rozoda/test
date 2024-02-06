@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      # Print the value of param1 from parameter store
+      #- echo $param1
+
+      # Print the environment variables
+      # - echo "Printing environment variables..."
+      # - printenv
+
+  build:
+    commands:
+      - echo "Running security scan on the source code..."
+      - cd backend
+      - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt
+
+  post_build:
+    commands:
+      - echo "Checking Trivy scan results..."
+      - if grep -qE "CRITICAL|HIGH" trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
+
+artifacts:
+  files:
+    - trivy_report.txt
