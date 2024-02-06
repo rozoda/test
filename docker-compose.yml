@@ -1,0 +1,23 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    # networks:
+    #   - netapp
+  frontend:
+    depends_on:
+      - backend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    # networks:
+    #   - netapp
+
+# networks:
+#   netapp:
