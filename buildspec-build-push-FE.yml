@@ -20,7 +20,3 @@ phases:
 # artifacts:
 #   files:
 #     - "**/*"
-
-# - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION .
-# - echo "Pushing Docker image to AWS ECR..."
-# - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
