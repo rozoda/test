@@ -20,8 +20,8 @@ app.get("/", (req, res) => {
 app.get("/test", async (req, res) => {
   try {
     const options = {
-      hostname: 'backend.karfaskm-dev',  //'backend'
-      port: 5001,
+      hostname: 'backend.ambry-dev-templatev3',  //'backend'
+      port: 3000,
       path: '/',
       method: 'GET',
     };
