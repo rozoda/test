@@ -5,9 +5,9 @@ phases:
     commands:
       - echo "Logging in to AWS ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - BUILD_DATE=$(date -u -d @$CODEBUILD_START_TIME +%Y%m%d%H%M)
-      - VERSION=$(cat version.txt)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - BUILD_DATE=$(date +%Y%m%d%H%M)
+      - VERSION=$(cat version.txt)
       - ENV="dev"
       - IMAGETAG="${VERSION}-${BUILD_DATE}-${COMMIT_HASH}-${ENV}"
 
