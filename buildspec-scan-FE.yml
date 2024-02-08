@@ -12,6 +12,7 @@ phases:
       - cd frontend
       # - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt
       - /bin/bash -c "docker run --rm -v \"$(pwd)/backend:/src\" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt"
+      - mv trivy_report.txt ../
   post_build:
     commands:
       - echo "Checking Trivy scan results..."
