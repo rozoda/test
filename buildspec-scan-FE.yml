@@ -4,14 +4,14 @@ phases:
   pre_build:
     commands:
       - echo "pre_build stage..."
-      - set -o pipefail
+      - /bin/bash -c "set -o pipefail"
 
   build:
     commands:
       - echo "Running security scan on the source code..."
       - cd frontend
-      - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt
-
+      # - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt
+      - /bin/bash -c "docker run --rm -v \"$(pwd)/backend:/src\" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt"
   post_build:
     commands:
       - echo "Checking Trivy scan results..."
