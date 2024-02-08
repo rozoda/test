@@ -4,20 +4,21 @@ phases:
   pre_build:
     commands:
       - echo "pre_build stage..."
-      - set -o pipefail
+      - /bin/bash -c "set -o pipefail"
 
   build:
     commands:
       - echo "Running security scan on the source code..."
       - cd backend
-      - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt
-
+      - /bin/bash -c "docker run --rm -v \"$(pwd):/src\" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt"
+      - mv trivy_report.txt ../backend_trivy_report.txt
   post_build:
     commands:
       - echo "Checking Trivy scan results..."
-      - if [ ! -f trivy_report.txt ]; then echo "Trivy report not found. Build failed."; exit 1; fi
-      - if grep -qE "CRITICAL|HIGH" trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
+      - if [ ! -f ../backend_trivy_report.txt ]; then echo "Trivy report not found. Build failed."; exit 1; fi
+      - cat ../backend_trivy_report.txt
+      - if grep -qE "CRITICAL|HIGH" ../backend_trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
 
 artifacts:
   files:
-    - trivy_report.txt
+    - backend_trivy_report.txt
