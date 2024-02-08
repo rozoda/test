@@ -10,14 +10,13 @@ phases:
     commands:
       - echo "Running security scan on the source code..."
       - cd frontend
-      # - docker run --rm -v "$(pwd)/backend:/src" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt
-      - /bin/bash -c "docker run --rm -v \"$(pwd)/backend:/src\" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt"
+      - /bin/bash -c "docker run --rm -v \"$(pwd):/src\" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt"
       - mv trivy_report.txt ../
   post_build:
     commands:
       - echo "Checking Trivy scan results..."
-      - if [ ! -f trivy_report.txt ]; then echo "Trivy report not found. Build failed."; exit 1; fi
-      - if grep -qE "CRITICAL|HIGH" trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
+      - if [ ! -f ../trivy_report.txt ]; then echo "Trivy report not found. Build failed."; exit 1; fi
+      - if grep -qE "CRITICAL|HIGH" ../trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
 
 artifacts:
   files:
