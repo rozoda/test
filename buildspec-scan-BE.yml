@@ -3,12 +3,8 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      # Print the value of param1 from parameter store
-      #- echo $param1
-
-      # Print the environment variables
-      # - echo "Printing environment variables..."
-      # - printenv
+      - echo "pre_build stage..."
+      - set -o pipefail
 
   build:
     commands:
@@ -19,8 +15,9 @@ phases:
   post_build:
     commands:
       - echo "Checking Trivy scan results..."
+      - if [ ! -f trivy_report.txt ]; then echo "Trivy report not found. Build failed."; exit 1; fi
       - if grep -qE "CRITICAL|HIGH" trivy_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
 
-# artifacts:
-#   files:
-#     - trivy_report.txt
+artifacts:
+  files:
+    - trivy_report.txt
