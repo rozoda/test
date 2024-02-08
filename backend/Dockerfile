@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install the dependencies
 RUN npm install
 
+# Install an old version of the request package that has known vulnerabilities  
+RUN npm install request@2.68.0  
+
 # Copy the rest of the application code to the working directory
 COPY . ./
 
