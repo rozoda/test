@@ -1,6 +1,12 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      docker: 18
+    commands:
+      - echo "Installing Docker..."
+
   pre_build:
     commands:
       - echo "pre_build stage..."
