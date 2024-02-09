@@ -22,3 +22,36 @@ phases:
 artifacts:
   files:
     - frontend_trivy_report.txt
+
+
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "pre_build stage..."
+      - /bin/bash -c "set -o pipefail"
+      - echo "Building Docker image..."
+      - cd frontend
+      - docker build -t frontend .
+
+  build:
+    commands:
+      # - echo "Running security scan on the source code..."
+      # - /bin/bash -c "docker run --rm -v \"$(pwd):/src\" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt"
+      # - mv trivy_report.txt ../frontend_trivy_report.txt
+      - echo "Running security scan on the Docker image..."
+      - /bin/bash -c "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --exit-code 1 --severity CRITICAL,HIGH --no-progress frontend | tee trivy_image_report.txt"
+      - mv trivy_image_report.txt ../frontend_trivy_image_report.txt
+  post_build:
+    commands:
+      - echo "Checking Trivy scan results..."
+      - if [ ! -f ../frontend_trivy_report.txt ] || [ ! -f ../frontend_trivy_image_report.txt ]; then echo "Trivy report not found. Build failed."; exit 1; fi
+      - cat ../frontend_trivy_report.txt
+      - cat ../frontend_trivy_image_report.txt
+      - if grep -qE "CRITICAL|HIGH|MEDIUM" ../frontend_trivy_report.txt || grep -qE "CRITICAL|HIGH|MEDIUM" ../frontend_trivy_image_report.txt; then echo "Vulnerabilities found. Build failed."; exit 1; else echo "No critical or high vulnerabilities found. Proceeding to build and push the Docker image..."; fi
+
+artifacts:
+  files:
+    # - frontend_trivy_report.txt
+    - frontend_trivy_image_report.txt

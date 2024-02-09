@@ -15,7 +15,6 @@ phases:
       - /bin/bash -c "docker run --rm -v \"$(pwd):/src\" aquasec/trivy:latest filesystem --exit-code 1 --severity CRITICAL,HIGH --no-progress /src | tee trivy_report.txt"
       - mv trivy_report.txt ../backend_trivy_report.txt
       - echo "Running security scan on the Docker image..."
-      # - /bin/bash -c "docker run --rm aquasec/trivy:latest image --exit-code 1 --severity CRITICAL,HIGH --no-progress backend | tee trivy_image_report.txt"
       - /bin/bash -c "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --exit-code 1 --severity CRITICAL,HIGH --no-progress backend | tee trivy_image_report.txt"
       - mv trivy_image_report.txt ../backend_trivy_image_report.txt
   post_build:
