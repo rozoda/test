@@ -6,7 +6,7 @@ phases:
       - echo "pre_build stage..."
       - /bin/bash -c "set -o pipefail"
       - echo "Building Docker image..."
-      - cd fronend
+      - cd frontend
       - docker build -t fronend .
 
   build:
