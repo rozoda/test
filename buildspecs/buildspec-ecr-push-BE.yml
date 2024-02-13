@@ -9,7 +9,7 @@ phases:
       - VERSION=$(cat version.txt)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       #- ENV="dev"
-      - IMAGETAG="${VERSION}-${COMMIT_HASH}"
+      - IMAGETAG="${VERSION}-${BUILD_DATE}-${COMMIT_HASH}"
 
   build:
     commands:
